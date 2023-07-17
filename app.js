@@ -65,21 +65,30 @@ app.get('/sign_in', (req, res) => {
 
 app.post('/sign_in', (req, res) => {
     console.log(req.body);
-    passport.authenticate("local")(req, res, (err) => {
-        if (err) {
-            console.log(err);
-            res.redirect('/sign_in');
-        }
+    req.logIn(new User(req.body), () => {
+        passport.authenticate("local", (err, user, info) => {
+            if (err) {
+                console.log(err);
+                res.redirect('/sign_in');
+            } else {
+                if (!user) {
+                    console.log("Authentication failed");
+                    res.redirect('/sign_in');
+                } else {
+                    console.log("Authentication successful");
+                    res.redirect('/secrets');
+                }
+            }
+        })(req, res);
+    });
+    });
 
-        else {
-            console.log("everytime I sign in, the email should be called username because this is what we set.");
-            res.redirect('/secrets');
-        }
-    })});
 
 app.get('/secrets', (req, res) => {
-    res.render('secrets');
-
+    if (req.isAuthenticated()) 
+        res.render('secrets');
+    else 
+        res.redirect('/sign_in');
 });
 
 app.listen('3000', () => console.log('listening on 3000'));
