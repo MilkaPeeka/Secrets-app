@@ -91,4 +91,12 @@ app.get('/secrets', (req, res) => {
         res.redirect('/sign_in');
 });
 
+app.get('/log_out', (req, res) => {
+    req.logout((err) => {
+      if (err) {
+        console.log(err);
+      }
+      res.redirect('/secrets');
+    });
+  });
 app.listen('3000', () => console.log('listening on 3000'));
