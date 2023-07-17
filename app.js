@@ -29,7 +29,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const userSchema = new mongoose.Schema ({
-    email: String,
+    username: String,
     password: String,
     googleId: String
   });
@@ -48,7 +48,7 @@ passport.use(new GoogleStrategy({
     passReqToCallback   : true
   },
   function(request, accessToken, refreshToken, profile, done) {
-    User.findOrCreate({ googleId: profile.id }, function (err, user) {
+    User.findOrCreate({ googleId: profile.id}, function (err, user) {
       return done(err, user);
     });
   }
@@ -72,9 +72,7 @@ app.get('/sign_up', (req, res) => {
 });
 
 app.post('/sign_up', (req, res) => {
-    console.log(req.body);
-
-    User.register({username: req.body.email}, req.body.password)
+    User.register({username: req.body.username}, req.body.password)
     .then((user) => {
         console.log("sign up successful, but user isnt authenticated yet");
         res.redirect('/sign_in');
