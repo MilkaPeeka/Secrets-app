@@ -10,7 +10,7 @@ const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
 const findOrCreate = require('mongoose-findorcreate');
 
 
-mongoose.connect("mongodb+srv://Yuval:Test-123@cluster0.dcwwtsq.mongodb.net/secretDB");
+mongoose.connect("mongodb+srv://Yuval:" +process.env.DB_PASSWORD +"@cluster0.dcwwtsq.mongodb.net/secretDB");
 
 const app = express();
 app.use(express.static("public"));
@@ -95,7 +95,6 @@ app.get('/sign_in', (req, res) => {
 });
 
 app.post('/sign_in', (req, res) => {
-    console.log(req.body);
     req.logIn(new User(req.body), () => {
         passport.authenticate("local", (err, user, info) => {
             if (err) {
@@ -119,7 +118,6 @@ app.get('/secrets', (req, res) => {
     if (req.isAuthenticated()) {
       _Secret.find({})
       .then((secrets) => {
-        console.log(secrets);
         res.render('secrets', {title: "Secrets :O", secrets: secrets});
       })
       .catch((err) => {
@@ -152,9 +150,6 @@ else {
     poster_id: user.id,
     text: text
   });
-
-  console.log(secret);
-
   secret.save().then(() => {
     res.redirect("/secrets")
   }).catch(err => {console.log(err);});
