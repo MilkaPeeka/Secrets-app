@@ -34,18 +34,11 @@ const userSchema = new mongoose.Schema ({
 userSchema.plugin(passportLocalMongoose);
 
 const User = new mongoose.model("User", userSchema);
+
 passport.use(User.createStrategy());
 
-passport.serializeUser(function(user, done) {
-    done(null, user.id);
-  });
-  
-passport.deserializeUser(function(id, done) {
-User.findById(id, function(err, user) {
-    done(err, user);
-});
-});
-
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 
 app.get('/sign_up', (req, res) => {
