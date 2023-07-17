@@ -28,6 +28,13 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+const secretSchema = new mongoose.Schema({
+  poster_id: String,
+  text: String});
+
+const _Secret = new mongoose.model("Secret", secretSchema);
+
 const userSchema = new mongoose.Schema ({
     username: String,
     password: String,
@@ -68,7 +75,7 @@ passport.serializeUser(function(user, cb) {
     });
   });
 app.get('/sign_up', (req, res) => {
-    res.render('sign-up');
+    res.render('sign-up', {title: "Sign Up"});
 });
 
 app.post('/sign_up', (req, res) => {
@@ -84,7 +91,7 @@ app.post('/sign_up', (req, res) => {
 });
 
 app.get('/sign_in', (req, res) => {
-    res.render('sign-in');
+    res.render('sign-in', {title: "Sign In"});
 });
 
 app.post('/sign_in', (req, res) => {
@@ -109,22 +116,51 @@ app.post('/sign_in', (req, res) => {
 
 
 app.get('/secrets', (req, res) => {
-    console.log(req.isAuthenticated());
-    if (req.isAuthenticated()) 
-        res.render('secrets');
+    if (req.isAuthenticated()) {
+      _Secret.find({})
+      .then((secrets) => {
+        console.log(secrets);
+        res.render('secrets', {title: "Secrets :O", secrets: secrets});
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      }
     else 
         res.redirect('/sign_in');
 });
 
-app.get('/sign_out', (req, res) => {
-    req.logout((err) => {
-      if (err) {
-        console.log(err);
-      }
-      res.redirect('/secrets');
-    });
+
+app.get('/new_secret', (req, res) => {
+  if (req.isAuthenticated())
+    res.render('new_secret', {title: "Compose A new Secret!"});
+  
+  else 
+  res.redirect('/sign_in');
+  
+});
+app.post('/new_secret', (req, res) => {
+  if (!req.isAuthenticated())
+    res.redirect('/sign_in');
+
+else {
+
+  const user = req.user;
+  const text = req.body.text;
+
+  const secret = new _Secret({
+    poster_id: user.id,
+    text: text
   });
 
+  console.log(secret);
+
+  secret.save().then(() => {
+    res.redirect("/secrets")
+  }).catch(err => {console.log(err);});
+
+} 
+});
 
 
 app.get("/auth/google",
@@ -139,4 +175,16 @@ app.get("/auth/google/secrets",
   });
 
 
+app.get('/sign_out', (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      console.log(err);
+    }
+    res.redirect('/secrets');
+  });
+});
+
+app.get('/', (req, res) => {
+  res.redirect('/secrets');
+});
 app.listen('3000', () => console.log('listening on 3000'));

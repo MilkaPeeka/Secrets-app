@@ -1,10 +1,29 @@
-<form method="post" action="/sign_up">
-    <input type="text" name="username" placeholder="Email" >
-    <input type="password" name="password" placeholder="password" >
-    <input type="submit" value="submit" />
-</form>
+<%- include('header.ejs') %>
 
+<div class="container-fluid d-flex flex-grow-1 justify-content-center align-items-center">
+    <form class="enter-form col-8" method="post" action="/sign_up">
+        <div class="mb-3">
+          <label for="email" class="form-label text-muted border-warning">Email address</label>
+          <input type="email" class="form-control" id="email" name="username">
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label text-muted border-warning">Password</label>
+          <input type="password" class="form-control" id="password" name="password">
+        </div>
 
-<form method="get" action="/auth/google">
-    <button type="submit" value="sign_up"> sign up with google</button>
-</form>
+        <div class="row d-flex justify-content-center m-0 p-0">
+            <div class="col d-flex justify-content-center p-0">
+                    <button class="btn btn-warning m-0 p-15 control-btn">Sign up</button>
+            </div>
+        </form>
+
+            <div class="col d-flex justify-content-center p-0 m-0">
+                <form class="col p-0 m-0" method="get" action="/auth/google">
+                    <button type="submit" class="btn btn-danger m-0 p-15 control-btn">Continue With Google</button>
+                </form>
+                </div>
+        </div>
+            </div>
+</div>
+
+<%- include('footer.ejs') %>

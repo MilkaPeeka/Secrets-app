@@ -1,0 +1,25 @@
+body {
+    height: 100vh;
+}
+
+.container-fluid{
+    height: 100%;
+}
+
+label {
+    font-size: 1.66rem;
+}
+
+.control-btn {
+    width: 90%;
+}
+
+.row {
+    height: 100%;
+}
+
+.secret {
+    margin-top: 100px;
+}
+
+form { display: inline; }
